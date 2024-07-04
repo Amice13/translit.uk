@@ -1,0 +1,67 @@
+---
+title: "Ukrainian string transliteration"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+The `translit.uk` package provides a straightforward and reliable method for transliterating Ukrainian Cyrillic text into Latin characters. This is particularly useful for applications involving data processing, text analysis, and internationalization. The package ensures that the transliteration process maintains the readability and meaning of the original Ukrainian text.
+
+## Installation
+
+To install the `translit.uk` package, you can use the following commands in R:
+
+```{r setup}
+# Install from CRAN (if available)
+install.packages("translit.uk")
+
+# Or install from GitHub
+# install.packages("devtools")
+devtools::install_github("amice13/translit.uk")
+```
+
+## Function Overview
+
+The core function of the `translit.uk` package is `translit`. This function takes a Ukrainian string as input and returns the transliterated Latin string.
+
+`translit` Function
+
+Description:
+
+The `translit` function converts a given string from Ukrainian Cyrillic to Latin characters using predefined transliteration rules.
+
+Usage:
+
+```{r}
+translit(string)
+```
+
+*Arguments*:
+
+* *string*: A character string in Ukrainian Cyrillic that needs to be transliterated. The input must be of type character
+
+*Value*:
+
+Returns a character string where all Ukrainian Cyrillic letters have been transliterated to Latin letters based on predefined rules.
+
+## Examples
+
+```{r}
+library(translit.uk)
+
+# Transliterate a simple Ukrainian word
+translit("згадка")
+
+# Output: "zhadka"
+```
