@@ -13,3 +13,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+URL: https://github.com/Amice13/translit.uk
+BugReports: https://github.com/Amice13/translit.uk/issues
