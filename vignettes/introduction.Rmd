@@ -22,13 +22,13 @@ The `translit.uk` package provides a straightforward and reliable method for tra
 
 To install the `translit.uk` package, you can use the following commands in R:
 
-```{r setup}
+```{r eval = F}
 # Install from CRAN (if available)
-install.packages("translit.uk")
+ install.packages("translit.uk")
 
 # Or install from GitHub
 # install.packages("devtools")
-devtools::install_github("amice13/translit.uk")
+devtools::install_github("amice13/translit.uk", force = T)
 ```
 
 ## Function Overview
@@ -43,8 +43,9 @@ The `translit` function converts a given string from Ukrainian Cyrillic to Latin
 
 Usage:
 
-```{r}
-translit(string)
+```{r eval = F}
+library(translit.uk)
+translit('строка')
 ```
 
 *Arguments*:
@@ -57,7 +58,7 @@ Returns a character string where all Ukrainian Cyrillic letters have been transl
 
 ## Examples
 
-```{r}
+```{r eval = F}
 library(translit.uk)
 
 # Transliterate a simple Ukrainian word
