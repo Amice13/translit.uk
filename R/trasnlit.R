@@ -3,10 +3,11 @@
 
 # Cyryllic letters pattern
 cyryllic_letters_pattern = '[\u0430-\u044f\u0457\u0491\u0454\u0457\u0451]'
+cyryllic_big_letters_pattern = '[\u0410-\u042F\u0404\u0406\u0407\u0490]'
 
 # The list of letters which must be handled differently if they are in the beginning of the word
 first_letters_pattern <- '^([\u0454\u0457\u0439\u044e\u044f\u0407])'
-first_letters_pattern2 <- '([^\u0430-\u044f\u0454\u0456\u0457\u0491\u0451]\'?)([\u0454\u0457\u0439\u044e\u044f])'
+first_letters_pattern2 <- '([^a-z\u0430-\u044f\u0454\u0456\u0457\u0491\u0451])([\u0454\u0457\u0439\u044e\u044f])'
 
 # The pattern "зг" must treated in a different way.
 # The direct transliteration "zh" means "ж". Therefore, the proper transliteration must be "zgh"
@@ -84,17 +85,39 @@ translit <- function (string) {
     s <- replace_by_position(s, match[1], match[1] + 1, zg_letters[str, ])
   }
   
-  # Replace first letter
-  
+  # Replace the first letter
   match = regexpr(first_letters_pattern, s, ignore.case = T, perl = T)
   if (match[1] > 0) {
-    s <- replace_by_position(s, 1, 1, first_letters[substr(s, 1, 1),])
+    capitalize <- regexpr(
+      cyryllic_big_letters_pattern,
+      substring(s, 2, 2),
+      perl = T
+    )[1] > 0
+    replacement <- ifelse(
+      capitalize,
+      toupper(first_letters[substr(s, 1, 1),]),
+      first_letters[substr(s, 1, 1),]
+    )
+    s <- replace_by_position(s, 1, 1, replacement)
   }
   while (regexpr(first_letters_pattern2, s, ignore.case = T, perl = T)[1] > 0) {
     match = regexpr(first_letters_pattern2, s, ignore.case = T, perl = T)
     str = substr(s, match[1] + 1, match[1] + 1)
-    s <- replace_by_position(s, match[1] + 1, match[1] + 1, first_letters[str, ])
+    letter_to_check = substr(s, match[1] + 2, match[1] + 2)
+    if (letter_to_check == "") letter_to_check = substr(s, match[1], match[1])
+    capitalize <- regexpr(
+      cyryllic_big_letters_pattern,
+      letter_to_check,
+      perl = T
+    )[1] > 0
+    replacement <- ifelse(
+      capitalize,
+      toupper(first_letters[str, ]),
+      first_letters[str, ]
+    )
+    s <- replace_by_position(s, match[1] + 1, match[1] + 1, replacement)
   }
+  
   for (i in 1:nrow(other_letters)) {
     s = gsub(rownames(other_letters)[i], other_letters[i,], s)
   }
