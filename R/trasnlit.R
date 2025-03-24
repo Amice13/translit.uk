@@ -54,8 +54,10 @@ rownames(other_letters) <- c(
 zg_letters <- data.frame(c('Zgh', 'zgh', 'zGh', 'ZGH'))
 rownames(zg_letters) <- c('\u0417\u0433', '\u0437\u0433', '\u0437\u0413', '\u0417\u0413')
 
-# Function to replace the string in position
+# Pattern to make fixed in capitalized strings
+not_capitalized_pattern <- '[a-z][A-Z]'
 
+# Function to replace the string in position
 replace_by_position <- function(text, start, end, replacement) {
   paste0(substr(text, 1, start - 1), replacement, substr(text, end + 1, nchar(text)))
 }
@@ -82,6 +84,16 @@ translit <- function (string) {
   while (regexpr(zg_letters_pattern, s, ignore.case = T, perl = T)[1] > 0) {
     match = regexpr(zg_letters_pattern, s, ignore.case = T, perl = T)
     str = substr(s, match[1], match[1] + 1)
+    capitalize <- regexpr(
+      cyryllic_big_letters_pattern,
+      substring(s, match[1], match[1] + 1),
+      perl = T
+    )[1] > 0
+    replacement <- ifelse(
+      capitalize,
+      toupper(zg_letters[str, ]),
+      zg_letters[str, ]
+    )
     s <- replace_by_position(s, match[1], match[1] + 1, zg_letters[str, ])
   }
   
@@ -117,9 +129,17 @@ translit <- function (string) {
     )
     s <- replace_by_position(s, match[1] + 1, match[1] + 1, replacement)
   }
-  
+
+  # Replace other symbols  
   for (i in 1:nrow(other_letters)) {
-    s = gsub(rownames(other_letters)[i], other_letters[i,], s)
+    s <- gsub(rownames(other_letters)[i], other_letters[i,], s)
+  }
+  
+  # Fix capitalized letter
+  while (regexpr(not_capitalized_pattern, s, ignore.case = F, perl = T)[1] > 0) {
+    match = regexpr(not_capitalized_pattern, s, ignore.case = F, perl = T)
+    str = substr(s, match[1], match[1] + 1)
+    s <- replace_by_position(s, match[1], match[1] + 1, toupper(str))
   }
   return(s)
 }
