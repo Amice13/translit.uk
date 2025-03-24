@@ -50,8 +50,8 @@ rownames(other_letters) <- c(
 )
 
 # Transliteration of "зг"
-zg_letters <- data.frame(c('Zgh', 'zgh', 'ZGH'))
-rownames(zg_letters) <- c('\u0417\u0433', '\u0437\u0433', '\u0417\u0413')
+zg_letters <- data.frame(c('Zgh', 'zgh', 'zGh', 'ZGH'))
+rownames(zg_letters) <- c('\u0417\u0433', '\u0437\u0433', '\u0437\u0413', '\u0417\u0413')
 
 #' Transliterate string in Ukrainian
 #'
@@ -70,16 +70,19 @@ translit <- function (string) {
   }
   # Replace apostrophes
   s = gsub(replace_apostrophe_pattern, '\\1\\2', s, ignore.case = T, perl = T)
-
+  
   # Replace all letters 'зг'
   while (regexpr(zg_letters_pattern, s, ignore.case = T, perl = T)[1] > 0) {
     match = regexpr(zg_letters_pattern, s, ignore.case = T, perl = T)
+    print(match)
     str = substr(s, match[1], match[1] + 1)
+    print(str)
     s = sub(substr(s, match[1], match[1] + 1), zg_letters[str,], s)
+    print(s)
   }
-
+  
   # Replace first letter
-
+  
   match = regexpr(first_letters_pattern, s, ignore.case = T, perl = T)
   if (match[1] > 0) {
     s = sub(substr(s, 1, 1), first_letters[substr(s, 1, 1),], s)
